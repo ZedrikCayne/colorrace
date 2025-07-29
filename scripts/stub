@@ -1,0 +1,31 @@
+#!/bin/sh
+
+echo Stubbing out files for ${1}
+BASENAME="${1}"
+echo $BASENAME
+
+echo "#ifndef __${BASENAME}doth__" >  src/${1}.h
+echo "#define __${BASENAME}doth__" >> src/${1}.h
+echo "#include <stdbool.h>"        >> src/${1}.h
+echo ""                            >> src/${1}.h
+echo "#ifdef __cplusplus"          >> src/${1}.h
+echo "extern \"C\" {"              >> src/${1}.h
+echo "#endif"                      >> src/${1}.h
+echo ""                            >> src/${1}.h
+echo ""                            >> src/${1}.h
+echo ""                            >> src/${1}.h
+echo "#ifdef __cplusplus"          >> src/${1}.h
+echo "}"                           >> src/${1}.h
+echo "#endif"                      >> src/${1}.h
+echo "#endif"                      >> src/${1}.h
+
+echo "#include <stdlib.h>"            >  src/${1}.c
+echo "#include <stdio.h>"             >> src/${1}.c
+echo ""                               >> src/${1}.c
+echo "#include <crankshaft/alloc.h>"  >> src/${1}.c
+echo "#include <crankshaft/logger.h>" >> src/${1}.c
+echo ""                               >> src/${1}.c
+echo "#include \"${1}.h\""            >> src/${1}.c
+echo ""                               >> src/${1}.c
+echo ""                               >> src/${1}.c
+echo ""                               >> src/${1}.c

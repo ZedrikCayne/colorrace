@@ -1,0 +1,31 @@
+#!/bin/bash
+
+echo Stubbing out files for ${1}
+BASENAME="${1,,}"
+echo $BASENAME
+
+echo "#ifndef __${BASENAME}doth__" >  src/${BASENAME}.hpp
+echo "#define __${BASENAME}doth__" >> src/${BASENAME}.hpp
+echo "#include <stdbool.h>"        >> src/${BASENAME}.hpp
+echo ""                            >> src/${BASENAME}.hpp
+echo "class ${1} {"                >> src/${BASENAME}.hpp
+echo "public:"                     >> src/${BASENAME}.hpp
+echo "    ${1}();"                 >> src/${BASENAME}.hpp
+echo "    ~${1}();"                >> src/${BASENAME}.hpp
+echo ""                            >> src/${BASENAME}.hpp
+echo "private:"                    >> src/${BASENAME}.hpp
+echo "};"                          >> src/${BASENAME}.hpp
+echo ""                            >> src/${BASENAME}.hpp
+echo "#endif"                      >> src/${BASENAME}.hpp
+
+echo "#include <crankshaft/alloc.h>"  >> src/${BASENAME}.cpp
+echo "#include <crankshaft/logger.h>" >> src/${BASENAME}.cpp
+echo ""                               >> src/${BASENAME}.cpp
+echo "#include \"${BASENAME}.hpp\""   >> src/${BASENAME}.cpp
+echo ""                               >> src/${BASENAME}.cpp
+echo "${1}::${1}() {"                 >> src/${BASENAME}.cpp
+echo "}"                              >> src/${BASENAME}.cpp
+echo ""                               >> src/${BASENAME}.cpp
+echo "${1}::~${1}() {"                >> src/${BASENAME}.cpp
+echo "}"                              >> src/${BASENAME}.cpp
+echo ""                               >> src/${BASENAME}.cpp
