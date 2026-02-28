@@ -142,7 +142,7 @@ TRY_AGAIN:
     UserSession *newSession = new UserSession(key);
     CS_hashtablePut( m_sessions, key, newSession );
     CS_serverSetReplyHeader( reply, "Location", "/" );
-    CS_serverSetReplyCookie( reply, "session", key, true );
+    CS_serverSetReplyCookie( reply, "session", key, true, CS_REPLY_COOKIE_SAMESITE_LAX );
     CS_serverDoReply( info, reply );
     return true;
 }
@@ -164,7 +164,7 @@ bool ColorRaceApplication::appInfo( struct CS_ClientInfo *info ) {
     }
     CS_hashtableReleaseMutex(m_games);
 
-    struct CS_StringBuilder *sb = CS_htmlToStringBuilder( root, 8192 );
+    struct CS_StringBuilder *sb = CS_htmlToStringBuilder( root, 8192, false );
     struct CS_Reply *reply = CS_serverCreateReply( info, CS_RESPONSE_200, CS_MIME_HTML, CS_SB_buffer  ( sb ), CS_SB_size( sb ) );
     CS_serverDoReply( info, reply );
     CS_SB_free( sb );
@@ -175,7 +175,7 @@ bool ColorRaceApplication::appInfo( struct CS_ClientInfo *info ) {
 bool ColorRaceApplication::appLogout( struct CS_ClientInfo *info ) {
     struct CS_Reply *reply = CS_serverCreateReply(info,CS_RESPONSE_302,CS_MIME_HTML,NULL,0);
     CS_serverSetReplyHeader( reply, "Location", "/welcome.html" );
-    CS_serverSetReplyCookie( reply, "session", "logged-out", true );
+    CS_serverSetReplyCookie( reply, "session", "logged-out", true, CS_REPLY_COOKIE_SAMESITE_LAX  );
     CS_serverDoReply( info, reply );
     return true;
 }
@@ -191,7 +191,7 @@ bool ColorRaceApplication::appSessionFilter( struct CS_ClientInfo *info ) {
     }
     struct CS_Reply *reply = CS_serverCreateReply(info,CS_RESPONSE_302,CS_MIME_HTML,NULL,0);
     CS_serverSetReplyHeader( reply, "Location", "/welcome.html" );
-    CS_serverSetReplyCookie( reply, "session", "logged-out", true );
+    CS_serverSetReplyCookie( reply, "session", "logged-out", true, CS_REPLY_COOKIE_SAMESITE_LAX );
     CS_serverDoReply( info, reply );
     return true;
 }
