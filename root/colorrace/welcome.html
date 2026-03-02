@@ -1,0 +1,228 @@
+<html>
+<head>
+    <title>Color Race</title>
+    <meta charset="utf-8"></meta>
+    <meta name="HandheldFriendly" content="true"></meta>
+    <meta name="MobileOptimized" content="320"></meta>
+    <meta name="viewport" content="initial-scale=1.0, width=device-width, user-scalable=no"></meta>
+    <style>
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+/* Reset Ends */
+
+html {
+    background-color: #0f0f1a;
+}
+body,body#wholeBody,code,textarea {
+    margin: 0px auto;
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    max-width:1024px;
+    line-height:1.3;
+    font-size:18px;
+    color:#E0E0E0;
+    width: 100%;
+    background-color: transparent;
+    color: white;
+    overflow: hidden;
+}
+body {
+    min-width: 100dvw;
+    max-width: 100dvw;
+    min-height: 100dvh;
+    max-height: 100dvh;
+}
+
+#lava-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    filter: blur(60px);
+    opacity: 0.6;
+}
+
+:root {
+    --square-size: calc( min( 0.12 * 100dvw , 0.12 * 100dvh ) );
+    --target-size: calc( var(--square-size) / 2 );
+    --other-size: calc( var(--square-size) / 10 );
+}
+
+.title-area {
+    margin-top: 0;
+    margin-bottom: 0;
+    align: center;
+    align-content: center;
+}
+.title {
+    margin: auto;
+    width: calc(var(--square-size)*5);
+    text-align: center;
+    font-size: calc(var(--square-size) / 1.5);
+    letter-spacing: 5px;
+    text-shadow: 0 0 10px rgba(255,255,255,0.5);
+    font-weight: 800;
+    padding: 20px;
+}
+.game-area {
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.text-area {
+    max-width: 800px;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+a {
+    color: #6dd5ed;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.2s;
+}
+a:hover {
+    color: #00d2ff;
+}
+a:visited {
+    color: #9d50bb;
+}
+a:active {
+    color: #FFFFFF;
+}
+
+</style>
+</head>
+<body id="wholeBody">
+    <canvas id="lava-bg"></canvas>
+    <div style="max-width:0;max-height:0;position:absolute;top=0;left=0;overflow:hidden" id="screenReaderElement" aria-live="polite"></div>
+    <div class="title-area">
+        <div class="title">COLOR RACE</div>
+    </div>
+    <div id="gamearea" class="game-area">
+        <div class="text-area">
+            Welcome to color race. Before continuing on to the game check out the <a href="/privacy_policy.html">Privacy Policy</a> and our <a href="/colorrace/terms_of_service.html">Terms of Service</a>.</br></br>
+            The next page might have an ad on it, whatever cookies it comes with we're ignoring them. We only set one cookie for the session. If you don't like it click this leave or click the <a href="/colorrace/logout">logout</a> link and we'll clear it out.</br></br>
+            Otherwise click <a href="/colorrace/okToSetCookie">here to set the cookie</a> and you can start playing. Note: The game is live and online. We do keep a couple of bots running just so that we can test the 'other players'. Hopefully we didn't make them too smart.
+        </div>
+    </div>
+    <script>
+        function initBackground() {
+            const canvas = document.getElementById('lava-bg');
+            const ctx = canvas.getContext('2d');
+            let width, height;
+
+            const blobs = [];
+            const numBlobs = 8;
+            const colors = ['red', 'green', '#4040FF', 'yellow', 'orange', 'white', 'black'];
+
+            class Blob {
+                constructor() {
+                    this.reset();
+                }
+                reset() {
+                    this.r = Math.random() * 250 + 200;
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.vx = (Math.random() - 0.5) * 0.8;
+                    this.vy = (Math.random() - 0.5) * 0.8;
+                    this.color = colors[Math.floor(Math.random() * colors.length)];
+                }
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    if (this.x < -this.r) this.x = width + this.r;
+                    if (this.x > width + this.r) this.x = -this.r;
+                    if (this.y < -this.r) this.y = height + this.r;
+                    if (this.y > height + this.r) this.y = -this.r;
+                }
+                draw() {
+                    ctx.beginPath();
+                    const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r);
+                    grad.addColorStop(0, this.color);
+                    grad.addColorStop(1, 'rgba(0,0,0,0)');
+                    ctx.fillStyle = grad;
+                    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+
+            window.addEventListener('resize', resize);
+            resize();
+
+            for (let i = 0; i < numBlobs; i++) {
+                blobs.push(new Blob());
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                blobs.forEach(blob => {
+                    blob.update();
+                    blob.draw();
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+        window.onload = initBackground;
+    </script>
+</body>
+</html>

@@ -591,11 +591,11 @@ a:active {
 
         function initClick() {
             clicky = new Array();
-            clicky.push( new Audio("/clik.ogg") );
-            clicky.push( new Audio("/clik.ogg") );
+            clicky.push( new Audio("/colorrace/clik.ogg") );
+            clicky.push( new Audio("/colorrace/clik.ogg") );
         }
         function initWin() {
-            win = new Audio("/win.ogg");
+            win = new Audio("/colorrace/win.ogg");
         }
 
         var whichClik = 0;
@@ -1111,7 +1111,7 @@ a:active {
             console.log("StartWebsocket");
             if( globalWebsocket === null ) {
                 try {
-                    globalWebsocket = new WebSocket("/gws");
+                    globalWebsocket = new WebSocket("/colorrace/gws");
                     globalWebsocket.addEventListener( "message", messageEvent );
                     globalWebsocket.addEventListener( "open", openEvent );
                     globalWebsocket.addEventListener( "close", closeEvent );

@@ -1,0 +1,193 @@
+<html>
+<head>
+    <title>Color Race</title>
+    <meta charset="utf-8"></meta>
+    <style>
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+/* Reset Ends */
+
+html {
+    background-color: #0f0f1a;
+}
+body,code,textarea {
+    margin: 0px auto;
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    max-width:1024px;
+    line-height:1.3;
+    font-size:18px;
+    color:#E0E0E0;
+    width: 100%;
+    background-color: transparent;
+    color: white;
+    min-height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+}
+#lava-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    filter: blur(60px);
+    opacity: 0.6;
+}
+.scroll {
+    margin: 40px auto;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    max-width: 800px;
+    overflow-y: auto;
+}
+a {
+    color: #6dd5ed;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+a:hover {
+    color: #00d2ff;
+}
+a:visited {
+    color: #9d50bb;
+}
+a:active {
+    color: #FFFFFF;
+}
+</style>
+</head>
+<body>
+<canvas id="lava-bg"></canvas>
+<div class="scroll">
+    <h1 style="font-size: 2em; margin-bottom: 20px; letter-spacing: 2px;">TERMS OF SERVICE</h1>
+    Welcome to color race. Simple web game, multi-player. The idea is to make the start pattern match the target pattern in the inner 3x3. Mobile and desktop friendly. Use your mouse or touch to click on tiles. They will slide into the open position (the black tile). Leaderboards are for time and number of moves to solved.<br/><br/>
+
+    Still in development. Enjoy playing. Leaderboards are not stored forever, puzzles may repeat. The three character inputs available for the leaderboards are restricted to plain ascii A to Z.<br/><br/>
+
+    Your playthrough and move set will be played back to other people who are solving the same puzzle as you are. So you will grant us a (deep breath) <strong>non-exclusive right to store, transfer, display, fold, spindle, mutilate and otherwise do with as we please your play through moves.</strong><br/><br/>
+
+    Well, that was a mouthfull.<br/><br/>
+
+    This server will probably go up and down like a yoyo. Apologies for that. <br/><br/>
+
+<div>Dogfood for <a href="https://github.com/ZedrikCayne/crankshaft">https://github.com/ZedrikCayne/crankshaft</a></div>
+</div>
+<script>
+    function initBackground() {
+        const canvas = document.getElementById('lava-bg');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+
+        const blobs = [];
+        const numBlobs = 8;
+        const colors = ['red', 'green', '#4040FF', 'yellow', 'orange', 'white', 'black'];
+
+        class Blob {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.r = Math.random() * 250 + 200;
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.8;
+                this.vy = (Math.random() - 0.5) * 0.8;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < -this.r) this.x = width + this.r;
+                if (this.x > width + this.r) this.x = -this.r;
+                if (this.y < -this.r) this.y = height + this.r;
+                if (this.y > height + this.r) this.y = -this.r;
+            }
+            draw() {
+                ctx.beginPath();
+                const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r);
+                grad.addColorStop(0, this.color);
+                grad.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = grad;
+                ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        for (let i = 0; i < numBlobs; i++) {
+            blobs.push(new Blob());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            blobs.forEach(blob => {
+                blob.update();
+                blob.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    }
+    window.onload = initBackground;
+</script>
+</body>
+</html>

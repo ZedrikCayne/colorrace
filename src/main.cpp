@@ -46,7 +46,7 @@ static char *serverName = defaultServerName;
 static char *logFile = NULL;
 static char defaultFileServingDir[] = "./root";
 static char *fileServingDir = defaultFileServingDir;
-static char defaultFileServingFile[] = "index.html";
+static char defaultFileServingFile[] = "/colorrace/index.html";
 static char *fileServingFile = defaultFileServingFile;
 static char *certFile = NULL;
 static char *keyFile = NULL;
@@ -154,17 +154,17 @@ void hupOnMainThread() {
 }
 
 struct CS_Route serverRoutes[] = {
-    { CS_HTTP_METHOD_GET,  CS_ROUTE_TYPE_EXACT, 0, "/terms_of_service.html", CS_serverFileServer },
-    { CS_HTTP_METHOD_HEAD, CS_ROUTE_TYPE_EXACT, 0, "/terms_of_service.html", CS_serverFileServer },
-    { CS_HTTP_METHOD_GET,  CS_ROUTE_TYPE_EXACT, 0, "/privacy_policy.html", CS_serverFileServer },
-    { CS_HTTP_METHOD_HEAD, CS_ROUTE_TYPE_EXACT, 0, "/privacy_policy.html", CS_serverFileServer },
-    { CS_HTTP_METHOD_GET,  CS_ROUTE_TYPE_EXACT, 0, "/welcome.html", CS_serverFileServer },
-    { CS_HTTP_METHOD_HEAD, CS_ROUTE_TYPE_EXACT, 0, "/welcome.html", CS_serverFileServer },
-    { CS_HTTP_METHOD_GET,  CS_ROUTE_TYPE_EXACT, 0, "/logout", ColorRaceApplication::logout },
-    { CS_HTTP_METHOD_GET,  CS_ROUTE_TYPE_EXACT, 0, "/okToSetCookie", ColorRaceApplication::setCookie },
-    { CS_HTTP_METHOD_GET,  CS_ROUTE_TYPE_EXACT, 0, "/info", ColorRaceApplication::info },
-    { CS_HTTP_METHOD_ANY,  CS_ROUTE_TYPE_FILTER, 0, "/", ColorRaceApplication::sessionFilter },
-    { CS_HTTP_METHOD_ANY,  CS_ROUTE_TYPE_PREFIX, 0, "/gws", ColorRaceApplication::websocketHandler },
+    { CS_HTTP_METHOD_GET,  CS_ROUTE_TYPE_EXACT, 0, "/colorrace/terms_of_service.html", CS_serverFileServer },
+    { CS_HTTP_METHOD_HEAD, CS_ROUTE_TYPE_EXACT, 0, "/colorrace/terms_of_service.html", CS_serverFileServer },
+    { CS_HTTP_METHOD_GET,  CS_ROUTE_TYPE_EXACT, 0, "/colorrace/privacy_policy.html", CS_serverFileServer },
+    { CS_HTTP_METHOD_HEAD, CS_ROUTE_TYPE_EXACT, 0, "/colorrace/privacy_policy.html", CS_serverFileServer },
+    { CS_HTTP_METHOD_GET,  CS_ROUTE_TYPE_EXACT, 0, "/colorrace/welcome.html", CS_serverFileServer },
+    { CS_HTTP_METHOD_HEAD, CS_ROUTE_TYPE_EXACT, 0, "/colorrace/welcome.html", CS_serverFileServer },
+    { CS_HTTP_METHOD_GET,  CS_ROUTE_TYPE_EXACT, 0, "/colorrace/logout", ColorRaceApplication::logout },
+    { CS_HTTP_METHOD_GET,  CS_ROUTE_TYPE_EXACT, 0, "/colorrace/okToSetCookie", ColorRaceApplication::setCookie },
+    { CS_HTTP_METHOD_GET,  CS_ROUTE_TYPE_EXACT, 0, "/colorrace/info", ColorRaceApplication::info },
+    { CS_HTTP_METHOD_ANY,  CS_ROUTE_TYPE_FILTER, 0, "/colorrace", ColorRaceApplication::sessionFilter },
+    { CS_HTTP_METHOD_ANY,  CS_ROUTE_TYPE_PREFIX, 0, "/colorrace/gws", ColorRaceApplication::websocketHandler },
     { CS_HTTP_METHOD_HEAD, CS_ROUTE_TYPE_WILDCARD, 0, "", CS_serverFileServer },
     { CS_HTTP_METHOD_GET,  CS_ROUTE_TYPE_WILDCARD, 0, "", CS_serverFileServer },
 };

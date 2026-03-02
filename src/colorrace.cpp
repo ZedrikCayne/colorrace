@@ -21,6 +21,9 @@
 ColorRaceApplication *ColorRaceApplication::globalInstance = NULL;
 
 
+#define COLORRACE_SESSION_COOKIE "colorrace_session"
+
+
 long long ColorRaceApplication::epochMillisecond() {
     long long returnValue = 0;
 
@@ -141,8 +144,8 @@ TRY_AGAIN:
     }
     UserSession *newSession = new UserSession(key);
     CS_hashtablePut( m_sessions, key, newSession );
-    CS_serverSetReplyHeader( reply, "Location", "/" );
-    CS_serverSetReplyCookie( reply, "session", key, true, CS_REPLY_COOKIE_SAMESITE_LAX );
+    CS_serverSetReplyHeader( reply, "Location", "/colorrace" );
+    CS_serverSetReplyCookie( reply, COLORRACE_SESSION_COOKIE, key, true, CS_REPLY_COOKIE_SAMESITE_LAX );
     CS_serverDoReply( info, reply );
     return true;
 }
@@ -174,14 +177,14 @@ bool ColorRaceApplication::appInfo( struct CS_ClientInfo *info ) {
 
 bool ColorRaceApplication::appLogout( struct CS_ClientInfo *info ) {
     struct CS_Reply *reply = CS_serverCreateReply(info,CS_RESPONSE_302,CS_MIME_HTML,NULL,0);
-    CS_serverSetReplyHeader( reply, "Location", "/welcome.html" );
-    CS_serverSetReplyCookie( reply, "session", "logged-out", true, CS_REPLY_COOKIE_SAMESITE_LAX  );
+    CS_serverSetReplyHeader( reply, "Location", "/colorrace/welcome.html" );
+    CS_serverSetReplyCookie( reply, COLORRACE_SESSION_COOKIE, "logged-out", true, CS_REPLY_COOKIE_SAMESITE_LAX  );
     CS_serverDoReply( info, reply );
     return true;
 }
 
 bool ColorRaceApplication::appSessionFilter( struct CS_ClientInfo *info ) {
-    const char *cookieValue = CS_serverGetRequestCookie( info, "session" );
+    const char *cookieValue = CS_serverGetRequestCookie( info, COLORRACE_SESSION_COOKIE );
     if( cookieValue != NULL ) {
         const void *currentSession =
             CS_hashtableGet( m_sessions, cookieValue );
@@ -190,8 +193,8 @@ bool ColorRaceApplication::appSessionFilter( struct CS_ClientInfo *info ) {
         }
     }
     struct CS_Reply *reply = CS_serverCreateReply(info,CS_RESPONSE_302,CS_MIME_HTML,NULL,0);
-    CS_serverSetReplyHeader( reply, "Location", "/welcome.html" );
-    CS_serverSetReplyCookie( reply, "session", "logged-out", true, CS_REPLY_COOKIE_SAMESITE_LAX );
+    CS_serverSetReplyHeader( reply, "Location", "/colorrace/welcome.html" );
+    CS_serverSetReplyCookie( reply, COLORRACE_SESSION_COOKIE, "logged-out", true, CS_REPLY_COOKIE_SAMESITE_LAX );
     CS_serverDoReply( info, reply );
     return true;
 }
@@ -199,7 +202,7 @@ bool ColorRaceApplication::appSessionFilter( struct CS_ClientInfo *info ) {
 #define SEND_FRAME(__WS__,__FRAME__,__GOTO__) if((__FRAME__)==NULL||CS_WS_pushFrame(__WS__,__FRAME__,true)) { goto __GOTO__; }
 bool ColorRaceApplication::appWebsocketHandler( struct CS_ClientInfo *info ) {
     if ( CS_WS_requestWantsWebsocket(info) ) {
-        const char *cookieValue = CS_serverGetRequestCookie( info, "session" );
+        const char *cookieValue = CS_serverGetRequestCookie( info, COLORRACE_SESSION_COOKIE );
         if( cookieValue == NULL ) return true;
         const void *currentSession = CS_hashtableGet( m_sessions, cookieValue );
         struct CS_WebSocket *gws = CS_WS_create( info, NULL );
