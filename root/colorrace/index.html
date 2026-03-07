@@ -504,6 +504,23 @@ a:active {
             }
 
             window.addEventListener('resize', resize);
+            window.addEventListener('keydown', function(event) {
+                if( clickStop ) return;
+                switch(event.key) {
+                    case "ArrowUp":
+                        if( theHole.theBottom !== theEdge ) theHole.theBottom.click();
+                        break;
+                    case "ArrowDown":
+                        if( theHole.theTop !== theEdge ) theHole.theTop.click();
+                        break;
+                    case "ArrowLeft":
+                        if( theHole.theRight !== theEdge ) theHole.theRight.click();
+                        break;
+                    case "ArrowRight":
+                        if( theHole.theLeft !== theEdge ) theHole.theLeft.click();
+                        break;
+                }
+            });
             resize();
 
             for (let i = 0; i < numBlobs; i++) {
