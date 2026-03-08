@@ -255,10 +255,12 @@ body {
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     transition: left 0.1s ease-in, top 0.1s ease-in, transform 0.1s ease;
 }
-.square:hover {
-    filter: brightness(1.2);
-    transform: scale(0.98);
-    cursor: pointer;
+@media (hover: hover) {
+    .square:hover {
+        filter: brightness(1.2);
+        transform: scale(0.98);
+        cursor: pointer;
+    }
 }
 .square:active {
     filter: brightness(0.8);
