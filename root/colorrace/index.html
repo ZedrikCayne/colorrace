@@ -142,9 +142,44 @@ body {
     background: var(--glass-bg);
     backdrop-filter: blur(10px);
     border: 1px solid var(--glass-border);
-    padding: 10px;
+    padding: 15px;
     border-radius: 15px;
-    columns: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 120px;
+    gap: 10px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat-label {
+    font-size: 0.7em;
+    opacity: 0.8;
+}
+
+.stat-value {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.scoring-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.scoring-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
 }
 
 .outer-display-box {
@@ -360,14 +395,43 @@ body {
     margin-bottom: 0;
     margin-left: auto;
     margin-right: auto;
-    columns: 1;
 }
 .upper-game-area {
-    columns: 1;
     display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
 }
 .lower-game-area {
     display: flex;
+    margin-top: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+@media (orientation: portrait) {
+    .upper-game-area {
+        flex-direction: column;
+    }
+    .scoring-box {
+        flex-direction: column;
+        width: calc( var(--square-size) * 5 + 10 );
+        justify-content: center;
+        padding: 15px;
+        gap: 15px;
+    }
+    .scoring-stats {
+        flex-direction: row;
+        gap: 40px;
+        justify-content: center;
+        width: 100%;
+    }
+    .scoring-buttons {
+        flex-direction: row;
+        gap: 20px;
+        justify-content: center;
+        width: 100%;
+    }
 }
 a {
     color: #F0F0F0;
@@ -442,18 +506,25 @@ a:active {
             <div class="outer-display-box">
                 <div id="displaybox" class="display-box"></div>
             </div>
-            <div id="scoringbox" class="scoring-box" style="margin-left: 15px; display: flex; flex-direction: column; align-items: center; justify-content: space-around; min-width: 120px;">
+            <div id="scoringbox" class="scoring-box">
                 <div id="targetbox" class="target-box"></div>
-                <div style="font-size: 0.7em; opacity: 0.8; margin-top: 5px;">MOVES</div>
-                <div id="nummoves" style="font-size: 1.2em; font-weight: bold;">0</div>
-                <div style="font-size: 0.7em; opacity: 0.8;">TILES</div>
-                <div id="numtiles" style="font-size: 1.2em; font-weight: bold;">0</div>
-                <div style="flex-grow: 1;"></div>
-                <div id="nextbutton" class="gotozero"><button onclick="goNext()" class="roundbutton nextbutton">NEXT</button></div>
-                <div id="abandonbutton" class="gotofull"><button onclick="abandonGame()" class="roundbutton abandonbutton">ABANDON</button></div>
+                <div class="scoring-stats">
+                    <div class="stat-item">
+                        <div class="stat-label">MOVES</div>
+                        <div id="nummoves" class="stat-value">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">TILES</div>
+                        <div id="numtiles" class="stat-value">0</div>
+                    </div>
+                </div>
+                <div class="scoring-buttons">
+                    <div id="nextbutton" class="gotozero"><button onclick="goNext()" class="roundbutton nextbutton">NEXT</button></div>
+                    <div id="abandonbutton" class="gotofull"><button onclick="abandonGame()" class="roundbutton abandonbutton">ABANDON</button></div>
+                </div>
             </div>
         </div>
-        <div id="otherbox" class="lower-game-area" style="margin-top: 15px; flex-wrap: wrap; justify-content: center;">
+        <div id="otherbox" class="lower-game-area">
         </div>
     </div>
     <script>
