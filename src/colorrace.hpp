@@ -4,6 +4,7 @@
 
 #include <crankshaft/hashtable.h>
 #include <crankshaft/server.h>
+#include <crankshaft/thread.h>
 
 class GameSession;
 class UserSession;
@@ -15,6 +16,7 @@ public:
     static bool setCookie( struct CS_ClientInfo *info );
     static bool logout( struct CS_ClientInfo *info );
     static bool info( struct CS_ClientInfo *info );
+    static bool reaperThread( struct CS_Thread *thread, int threadState, void *context );
 
     static GameSession *getGameSession( UserSession *userState );
 
@@ -33,12 +35,14 @@ private:
     bool appSetCookie( struct CS_ClientInfo *info );
     bool appLogout( struct CS_ClientInfo *info );
     bool appInfo( struct CS_ClientInfo *info );
+    bool appReaperThread( struct CS_Thread *thread, int threadState, void *context );
     GameSession *newGameSession( const char *name );
     GameSession *appGetGameSession( UserSession *forUser = NULL );
 
     struct CS_Mutex *m_gamesMutex;
     struct CS_HashTable *m_games;
     struct CS_HashTable *m_sessions;
+    struct CS_Thread *m_reaperThread;
     const struct CS_Storage *m_gameStorage;
 };
 

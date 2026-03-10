@@ -171,7 +171,7 @@ bool GameSession::allDisconnected() {
         struct LocalUserAndId *lu = (struct LocalUserAndId *)item->value;
         if( lu ) {
             UserSession *session = lu->session;
-            if( !session || !session->isConnected() ) {
+            if( session && session->isConnected() ) {
                 returnValue = false;
                 break;
             }
@@ -251,6 +251,8 @@ bool GameSession::gameThread( int threadState ) {
                 break;
             case GAME_STATE_RUNNING_OPEN:
                 if( anyWon() || allDisconnected() ) {
+                    CS_LOG_TRACE_IF( anyWon(), "Someone won." );
+                    CS_LOG_TRACE_IF( allDisconnected(), "All disconnected." );
                     setState( GAME_STATE_RUNNING_CLOSED );
                     broadcast( "warn", "30 seconds until scoring." );
                 }

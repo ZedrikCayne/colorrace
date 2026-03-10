@@ -43,6 +43,12 @@ GameSession *ColorRaceApplication::getGameSession( UserSession *userState ) {
     return app->appGetGameSession( userState );
 }
 
+bool ColorRaceApplication::reaperThread( struct CS_Thread *thread, int threadState, void *context ) {
+    ColorRaceApplication *app = getInstance();
+    if( !app ) return true;
+    return app->appReaperThread(thread,threadState,context);
+}
+
 static const char *freshName() {
     const char *tname = CS_tempBuffSnprintf(64, "pmoc~~~%ld", ColorRaceApplication::epochMillisecond() );
     int nameLen = strlen(tname);
@@ -84,10 +90,31 @@ GameSession *ColorRaceApplication::appGetGameSession( UserSession *forUser ) {
     return returnValue;
 }
 
+bool ColorRaceApplication::appReaperThread( struct CS_Thread *thread, int threadState, void *context ) {
+    const void *removeMe = NULL;
+    if( threadState == CS_THREAD_RUNNING ) {
+        CS_hashtableGrabMutex( m_games );
+        CS_HASHTABLE_ITER( m_games, entry ) {
+            GameSession *gs = (GameSession *)entry->value;
+            if( gs->reapMe() ) {
+                removeMe = entry->fullKey;
+                break;
+            }
+        }
+        CS_hashtableReleaseMutex( m_games );
+        if( removeMe ) CS_hashtableRemove( m_games, removeMe );
+        removeMe = NULL;
+        struct timespec ts = { 0, 100000000 };
+        nanosleep(&ts,NULL);
+    }
+    return false;
+}
+
 ColorRaceApplication::ColorRaceApplication() {
     m_games = CS_HASHTABLE_STRING_VOID( 50, CS_HASHTABLE_FLAG_MUTEX|CS_HASHTABLE_FLAG_VERY_PEDANTIC );
     m_sessions = CS_HASHTABLE_STRING_VOID( 50, CS_HASHTABLE_FLAG_MUTEX|CS_HASHTABLE_FLAG_VERY_PEDANTIC );
     m_gameStorage = CS_storageOpen("GAMESINFO","file=secrets/games.sqlite",CS_STORAGE_BACKEND_SQLITE);
+    m_reaperThread = CS_threadStart("Reaper",this,ColorRaceApplication::reaperThread);
 }
 
 ColorRaceApplication::~ColorRaceApplication() {
@@ -95,6 +122,8 @@ ColorRaceApplication::~ColorRaceApplication() {
     CS_hashtableFree( m_sessions );
 
     CS_storageClose( m_gameStorage );
+    CS_threadStop(m_reaperThread);
+    CS_threadReturn(m_reaperThread);
 }
 
 bool ColorRaceApplication::sessionFilter( struct CS_ClientInfo *info ) {
