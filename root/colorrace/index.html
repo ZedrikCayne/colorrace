@@ -93,7 +93,7 @@ body {
 
 :root {
     --square-size: calc( min( 0.12 * 100dvw , 0.12 * 100dvh ) );
-    --target-size: calc( var(--square-size) / 2 );
+    --target-size: calc( var(--square-size) / 3 );
     --other-size: calc( var(--square-size) / 10 );
     --glass-bg: rgba(255, 255, 255, 0.05);
     --glass-border: rgba(255, 255, 255, 0.1);
@@ -149,6 +149,7 @@ body {
     align-items: center;
     justify-content: space-between;
     min-width: 120px;
+    min-height: 120px;
     gap: 10px;
 }
 
@@ -212,6 +213,8 @@ body {
     position: relative;
     width: calc( var(--target-size) * 3 );
     height: calc( var(--target-size) * 3 );
+    min-width: calc( var(--target-size) * 3 );
+    min-height: calc( var(--target-size) * 3 );
     background: rgba(0,0,0,0.6);
     border-radius: 5px;
 }
@@ -416,15 +419,15 @@ body {
         flex-direction: column;
     }
     .scoring-box {
-        flex-direction: column;
+        flex-direction: row;
         width: calc( var(--square-size) * 5 + 10 );
         justify-content: center;
         padding: 15px;
         gap: 15px;
     }
     .scoring-stats {
-        flex-direction: row;
-        gap: 40px;
+        flex-direction: column;
+        gap: 10px;
         justify-content: center;
         width: 100%;
     }
