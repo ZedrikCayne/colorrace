@@ -29,6 +29,7 @@ public:
     int tileCount();
     int currentMs();
     int startedMs();
+    bool isConnected();
     bool hasFinished();
     void kick();
     bool sendBoardState(void);

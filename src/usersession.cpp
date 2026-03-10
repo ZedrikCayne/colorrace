@@ -151,6 +151,10 @@ bool UserSession::hasFinished() {
     return m_board->winner();
 }
 
+bool UserSession::isConnected() {
+    return m_ws != NULL;
+}
+
 void UserSession::kick() {
     if( m_ws ) CS_WS_close( m_ws, CS_WS_CLOSE_GOING_AWAY );
 }

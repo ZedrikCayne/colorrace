@@ -171,7 +171,7 @@ bool GameSession::allDisconnected() {
         struct LocalUserAndId *lu = (struct LocalUserAndId *)item->value;
         if( lu ) {
             UserSession *session = lu->session;
-            if( session ) {
+            if( !session || !session->isConnected() ) {
                 returnValue = false;
                 break;
             }
