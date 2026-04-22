@@ -32,7 +32,7 @@ int acceptSocket = 0;
 
 static bool autoLogin = false;
 static bool onlyFails = false;
-static char defaultServerName[] = "webmud";
+static char defaultServerName[] = "colorrace";
 static bool suppressErrors = false;
 static bool wantHelp = false;
 static bool noWarn = false;
@@ -206,11 +206,6 @@ int main(int argc, char *argv[] ) {
 
     if( CS_sslInit(keyFile,certFile,selfSignHostname) ) {
         CS_LOG_ERROR("Error initializing ssl.");
-        return -1;
-    }
-
-    if( CS_GS_initWithEnvironmentVariable( "GOOGLE_JSON" ) ) {
-        CS_LOG_ERROR("GOOGLE_JSON not defined in the environment. Anything depending on google services json being initialized will fail.");
         return -1;
     }
 

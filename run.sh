@@ -1,3 +1,3 @@
 #gdb --args build/webmud --trace
-build/colorrace
+build/colorrace --trace --log-access logs/access
 
