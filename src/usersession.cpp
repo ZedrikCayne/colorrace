@@ -15,7 +15,7 @@
 #include "util.h"
 
 UserSession::UserSession(const char *sessionKey) {
-    m_sessionKey = CS_stringCopy(sessionKey);
+    m_sessionKey = CS_cstringCopy(sessionKey);
     m_mutex = CS_mutexTakeNamed("USER_SESSION");
     m_json = CS_jsonNodeNew( 8192 );
     m_sb = CS_SB_create( 8192 );
@@ -34,7 +34,7 @@ UserSession::~UserSession() {
     struct CS_Mutex *mutex = m_mutex;
     CS_mutexLock( mutex );
     m_mutex = NULL;
-    CS_stringFree(m_sessionKey);
+    CS_cstringFree(m_sessionKey);
     m_sessionKey = NULL;
     if( m_ws ) {
         CS_WS_close( m_ws, CS_WS_CLOSE_GOING_AWAY );

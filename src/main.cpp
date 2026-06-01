@@ -153,20 +153,29 @@ void hupOnMainThread() {
     GotHup = false;
 }
 
+static const struct CS_String TOS = CS_STRING("/colorrace/terms_of_service.html");
+static const struct CS_String PRIVACY = CS_STRING("/colorrace/privacy_policy.html");
+static const struct CS_String WELCOME = CS_STRING("/colorrace/welcome.html");
+static const struct CS_String LOGOUT = CS_STRING("/colorrace/logout");
+static const struct CS_String OKSETCOOKIE = CS_STRING("/colorrace/okToSetCookie");
+static const struct CS_String INFO_STRING = CS_STRING("/colorrace/info");
+static const struct CS_String GWS = CS_STRING("/colorrace/gws");
+static const struct CS_String COLORRACE = CS_STRING("/colorrace");
+
 struct CS_Route serverRoutes[] = {
-    { CS_HTTP_METHOD_GET,  CS_ROUTE_TYPE_EXACT, 0, "/colorrace/terms_of_service.html", CS_serverFileServer },
-    { CS_HTTP_METHOD_HEAD, CS_ROUTE_TYPE_EXACT, 0, "/colorrace/terms_of_service.html", CS_serverFileServer },
-    { CS_HTTP_METHOD_GET,  CS_ROUTE_TYPE_EXACT, 0, "/colorrace/privacy_policy.html", CS_serverFileServer },
-    { CS_HTTP_METHOD_HEAD, CS_ROUTE_TYPE_EXACT, 0, "/colorrace/privacy_policy.html", CS_serverFileServer },
-    { CS_HTTP_METHOD_GET,  CS_ROUTE_TYPE_EXACT, 0, "/colorrace/welcome.html", CS_serverFileServer },
-    { CS_HTTP_METHOD_HEAD, CS_ROUTE_TYPE_EXACT, 0, "/colorrace/welcome.html", CS_serverFileServer },
-    { CS_HTTP_METHOD_GET,  CS_ROUTE_TYPE_EXACT, 0, "/colorrace/logout", ColorRaceApplication::logout },
-    { CS_HTTP_METHOD_GET,  CS_ROUTE_TYPE_EXACT, 0, "/colorrace/okToSetCookie", ColorRaceApplication::setCookie },
-    { CS_HTTP_METHOD_GET,  CS_ROUTE_TYPE_EXACT, 0, "/colorrace/info", ColorRaceApplication::info },
-    { CS_HTTP_METHOD_ANY,  CS_ROUTE_TYPE_FILTER, 0, "/colorrace", ColorRaceApplication::sessionFilter },
-    { CS_HTTP_METHOD_ANY,  CS_ROUTE_TYPE_PREFIX, 0, "/colorrace/gws", ColorRaceApplication::websocketHandler },
-    { CS_HTTP_METHOD_HEAD, CS_ROUTE_TYPE_WILDCARD, 0, "", CS_serverFileServer },
-    { CS_HTTP_METHOD_GET,  CS_ROUTE_TYPE_WILDCARD, 0, "", CS_serverFileServer },
+    { CS_HTTP_METHOD_GET,  CS_ROUTE_TYPE_EXACT, &TOS, CS_serverFileServer },
+    { CS_HTTP_METHOD_HEAD, CS_ROUTE_TYPE_EXACT, &TOS, CS_serverFileServer },
+    { CS_HTTP_METHOD_GET,  CS_ROUTE_TYPE_EXACT, &PRIVACY, CS_serverFileServer },
+    { CS_HTTP_METHOD_HEAD, CS_ROUTE_TYPE_EXACT, &PRIVACY, CS_serverFileServer },
+    { CS_HTTP_METHOD_GET,  CS_ROUTE_TYPE_EXACT, &WELCOME, CS_serverFileServer },
+    { CS_HTTP_METHOD_HEAD, CS_ROUTE_TYPE_EXACT, &WELCOME, CS_serverFileServer },
+    { CS_HTTP_METHOD_GET,  CS_ROUTE_TYPE_EXACT, &LOGOUT, ColorRaceApplication::logout },
+    { CS_HTTP_METHOD_GET,  CS_ROUTE_TYPE_EXACT, &OKSETCOOKIE, ColorRaceApplication::setCookie },
+    { CS_HTTP_METHOD_GET,  CS_ROUTE_TYPE_EXACT, &INFO_STRING, ColorRaceApplication::info },
+    { CS_HTTP_METHOD_ANY,  CS_ROUTE_TYPE_FILTER, &COLORRACE, ColorRaceApplication::sessionFilter },
+    { CS_HTTP_METHOD_ANY,  CS_ROUTE_TYPE_PREFIX, &GWS, ColorRaceApplication::websocketHandler },
+    { CS_HTTP_METHOD_HEAD, CS_ROUTE_TYPE_WILDCARD, NULL, CS_serverFileServer },
+    { CS_HTTP_METHOD_GET,  CS_ROUTE_TYPE_WILDCARD, NULL, CS_serverFileServer },
 };
 
 int main(int argc, char *argv[] ) {
