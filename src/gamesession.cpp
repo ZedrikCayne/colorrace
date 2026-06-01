@@ -93,7 +93,7 @@ bool GameSession::broadcastGameState() {
 bool GameSession::broadcast( const char *what, const char *value ) {
     CS_jsonNodeReset( m_broadcastJSON );
     CS_SB_reset( m_broadcastSB );
-    CS_jsonNodeAddUnquotedString( CS_jsonNodeAppendObject( m_broadcastJSON, NULL ), what, value );
+    CS_jsonNodeAddUnquotedCstring( CS_jsonNodeAppendObject( m_broadcastJSON, NULL ), what, value );
     CS_jsonNodePrintableToStringBuilder( m_broadcastJSON, m_broadcastSB );
     roundStringBuilderForWebsockets( m_broadcastSB );
     CS_hashtableGrabMutex( m_users );
@@ -131,7 +131,7 @@ bool GameSession::writeChanges() {
         if( session && session->dirty() ) {
             struct CS_JsonNode *user = CS_jsonNodeAddObject( users, NULL );
             CS_jsonNodeAddInteger( user, "id", lu->userId );
-            CS_jsonNodeAddUnquotedStringWithLength( user, "boardState", session->boardState(), BoardState::BYTES_IN_STATE);
+            CS_jsonNodeAddUnquotedCstringWithLength( user, "boardState", session->boardState(), BoardState::BYTES_IN_STATE);
             session->unlockBoardState();
             CS_jsonNodeAddInteger( user, "moves", session->moveCount() );
             CS_jsonNodeAddInteger( user, "tiles", session->tileCount() );

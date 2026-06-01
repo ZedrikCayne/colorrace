@@ -174,7 +174,7 @@ bool UserSession::sendServerIssue(const char *what) {
     const char *message = what?what:"Huh. Server Error";
     CS_JsonNode *root = CS_jsonNodeReset(m_json);
     CS_JsonNode *object = CS_jsonNodeAppendObject(root,NULL);
-    CS_jsonNodeAddUnquotedStringWithLength(object,"servererror", message, strlen(message) );
+    CS_jsonNodeAddUnquotedCstringWithLength(object,"servererror", message, strlen(message) );
     m_board->unlockBoardState();
     return sendJson( root );
 }
@@ -183,14 +183,14 @@ bool UserSession::sendBoardState() {
     CS_JsonNode *root = CS_jsonNodeReset(m_json);
     CS_JsonNode *object = CS_jsonNodeAppendObject(root,NULL);
     if( m_game->okToSendState() ) {
-        CS_jsonNodeAddUnquotedStringWithLength(object,"boardstate",m_board->currentBoardState(), BoardState::BYTES_IN_STATE);
+        CS_jsonNodeAddUnquotedCstringWithLength(object,"boardstate",m_board->currentBoardState(), BoardState::BYTES_IN_STATE);
         m_board->unlockBoardState();
         CS_jsonNodeAddInteger(object,"start",m_board->startedMs());
         CS_jsonNodeAddInteger(object,"current",m_board->elapsedMs());
         CS_jsonNodeAddInteger(object,"moves",m_board->moveCount());
         CS_jsonNodeAddInteger(object,"tiles",m_board->tileCount());
     }
-    CS_jsonNodeAddUnquotedString( object, "state", m_game->getStateString() );
+    CS_jsonNodeAddUnquotedCstring( object, "state", m_game->getStateString() );
     CS_jsonNodeAddInteger(object,"id",m_idForGame);
     return sendJson( root );
 }

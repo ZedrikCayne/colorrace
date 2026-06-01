@@ -170,7 +170,7 @@ ColorRaceApplication *ColorRaceApplication::getInstance() {
 bool ColorRaceApplication::appSetCookie( struct CS_ClientInfo *info ) {
     struct CS_Reply *reply = CS_serverCreateReply(info,CS_RESPONSE_302,CS_MIME_HTML,NULL,0);
 TRY_AGAIN:
-    const char *key = CS_uuid4StringTemp();
+    const char *key = CS_uuid4CstringTemp();
     const struct CS_String *keyString = CS_stringTempReferenceCstring(key,-1);
     const void *shouldBeNull = CS_hashtableGet( m_sessions, key );
     if( shouldBeNull != CS_HASHTABLE_ERROR && shouldBeNull != NULL ) {
